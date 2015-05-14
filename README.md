@@ -18,7 +18,8 @@ Otherwise, you can change ports and host from the config sections in the code.
 1. **SERVER**: choose either *send.pl* (PERL) or *send.py* (Python) and run ONE of them from
 the terminal: type either ``perl send.pl`` or ``python send.py``
 2. **CLIENT**: Open one of the two clients (but they also work at the same time in two separate tabs) 
-using a modern browser (e.g. tested and working with Chrome v.42+).
+using a modern browser (e.g. tested and working with Chrome v.42+). Notice that the client must be open after the server is
+running (otherwise, you will have to push the "reconnect" button).
 3. See the data pushed automatically from the server to the client via websockets :bowtie: (Optionally, you might want to use 
 [Firebug](https://getfirebug.com/releases/lite/chrome/) with *client-Chart.html* to see the console logs)
 
