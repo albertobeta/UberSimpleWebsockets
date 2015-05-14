@@ -29,11 +29,10 @@ running (otherwise, you will have to push the "reconnect" button).
 - A modern browser that supports websockets (e.g. Chrome v.42+)
 
 **Notice:**
-the PERL implementation of the server requires [Net::WebSocket::Server](http://search.cpan.org/~topaz/Net-WebSocket-Server-0.001003/lib/Net/WebSocket/Server.pm).
+- The PERL implementation of the server requires [Net::WebSocket::Server](http://search.cpan.org/~topaz/Net-WebSocket-Server-0.001003/lib/Net/WebSocket/Server.pm).
 In Mac OSX it can be installed using the command:
 `sudo perl -MCPAN -e 'install Net::WebSocket::Server'`
-
-The Python implementation of the server requires [Tornado](http://www.tornadoweb.org/en/stable/) that can be installed using pip
+- The Python implementation of the server requires [Tornado](http://www.tornadoweb.org/en/stable/) that can be installed using pip
 (`pip install tornado`) or manually:
 ```
 tar xvzf tornado-4.1.tar.gz
