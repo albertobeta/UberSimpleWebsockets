@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>Uber Simple Websockets</title>
+
+<!-- Websocket -->
+<script type="text/javascript">
+
+// Config
+var port = 9000;
+var host = "ws://127.0.0.1:"+port; // No need to change this if using localhost
+
+
+//Declare Variables
+var socket;
+var explodedValues = [0,0,0,0]; //initial value for the plot = 0
+
+function init() {
+	try {
+		socket = new WebSocket(host);
+		console.log('WebSocket status '+socket.readyState);
+		socket.onopen    = function(msg) { 
+							   console.log("Welcome - status "+this.readyState); 
+						   };
+		socket.onmessage = function(msg) { 
+
+							   console.log("Message Received: "+msg.data);
+							   explodedValues = msg.data.split(';');
+							//console.log("Separate Values: "+explodedValues);
+							
+							//convert strings to numbers
+							for(var i=0; i<explodedValues.length; i++) { explodedValues[i] = +explodedValues[i]; } 
+							
+							drawVisualization();
+							
+						   };
+		socket.onclose   = function(msg) { 
+							   console.log("Disconnected - status "+this.readyState); 
+						   };
+	}
+	catch(ex){ 
+		console.log(ex); 
+	}
+	
+}
+
+function quit(){
+	if (socket != null) {
+		console.log("Close Socket");
+		socket.close();
+		socket=null;
+	}
+}
+
+function reconnect() {
+	quit();
+	init();
+}
+
+</script>
+
+
+<!-- Google Chart -->
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script type="text/javascript">
+
+  function drawVisualization() {
+    // Create and populate the data table from the values received via websocket
+    var data = google.visualization.arrayToDataTable([
+        ['Tracker', '1'],
+        ['Apples', explodedValues[0]],
+        ['Bananas', explodedValues[1]],
+        ['Oranges', explodedValues[2]],
+        ['Peaches', explodedValues[3]]
+    ]);
+    
+    // use a DataView to 0-out all the values in the data set for the initial draw
+    var view = new google.visualization.DataView(data);
+    view.setColumns([0, {
+        type: 'number',
+        label: data.getColumnLabel(1),
+        calc: function () {return 0;}
+    }]);
+    
+    // Create and draw the plot
+    var chart = new google.visualization.BarChart(document.getElementById('visualization'));
+    
+    var options = {
+        title:"Fruit Consumption",
+        width: 600,
+        height: 400,
+        bar: { groupWidth: "95%" },
+        legend: { position: "none" },
+        animation: {
+            duration: 800
+        },
+        hAxis: {
+            // set these values to make the initial animation smoother
+            minValue: 0,
+            maxValue: 10
+        }
+    };
+    
+    var runOnce = google.visualization.events.addListener(chart, 'ready', function () {
+        google.visualization.events.removeListener(runOnce);
+        chart.draw(data, options);
+    });
+    
+    chart.draw(view, options);
+    
+    // you can handle the resizing here - no need to recreate your data and charts from scratch
+    $(window).resize(function() {
+        chart.draw(data, options);
+    });
+}
+google.load('visualization', '1', {packages: ['corechart'], callback: drawVisualization});
+
+</script>
+
+</head>
+<body onload="init()">
+<h3>Uber Simple Websockets - Real Time Chart</h3>
+
+<div id="visualization"></div>
+
+<button onclick="reconnect()">Reconnect</button>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>Uber Simple Websockets</title>
+
+<!-- Websocket -->
+<script type="text/javascript">
+
+// Config
+var port = 9000;
+var host = "ws://127.0.0.1:"+port; // No need to change this if using localhost
+var consoleLogOnScreen = true; // If true shows the console.log in an HTML element
+
+//Declare Variables
+var socket;
+var explodedValues = [0,0,0,0]; //initial value for the plot = 0
+
+
+function init() {
+	
+	if (consoleLogOnScreen) {
+	// Function to output console.log to html element (logs on screen)
+	// From: http://stackoverflow.com/a/20256785/1709835
+	(function () {
+		if (!console) {
+	        console = {};
+	    }
+	    var old = console.log;
+	    var logger = document.getElementById('log');
+	    console.log = function (message) {
+	            logger.innerHTML += message + '<br />';
+	    }
+	})();
+	}
+	
+	// Websocket!
+	try {
+		socket = new WebSocket(host);
+		console.log('WebSocket status '+socket.readyState);
+		socket.onopen    = function(msg) { 
+							   console.log("Welcome - status "+this.readyState); 
+						   };
+		socket.onmessage = function(msg) { 
+
+							   console.log("Message Received: "+msg.data);
+							
+						   };
+		socket.onclose   = function(msg) { 
+							   console.log("Disconnected - status "+this.readyState); 
+						   };
+	}
+	catch(ex){ 
+		console.log(ex); 
+	}
+	
+}
+
+function quit(){
+	if (socket != null) {
+		console.log("Close Socket");
+		socket.close();
+		socket=null;
+	}
+}
+
+function reconnect() {
+	quit();
+	init();
+}
+
+</script>
+
+</head>
+<body onload="init()">
+<h3>Uber Simple Websockets - Display Logs</h3>
+
+<button onclick="reconnect()">Reconnect</button>
+
+<h4>Log</h4>
+<div id="log"></div>
+
+</body>
+</html>
